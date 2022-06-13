@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container"></div>
+    <script src="../build/index.umd.js"></script>
+    <script>
+      (async () => {
+        const verifyUserSession = async () => {
+          try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+              document.querySelector(".form").classList.remove("hidden");
+              return false;
+            }
+
+            const me = await fetch("http://localhost:8000/me", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }).then(res => res.json());
+
+            console.log(me);
+
+            location.href = "/tests/sdk.html";
+          } catch (err) {
+            console.error(err);
+            alert("An unknown error has occurred: " + err.message);
+          }
+        };
+
+        const url = new URL(location.href);
+        const token = url.searchParams.get("aatoken");
+
+        if (token) {
+          const response = await fetch(
+            `http://localhost:8000/auth/${data.auth_method}/validate`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                requestId: data.id
+              })
+            }
+          ).then(res => res.json());
+          localStorage.setItem("token", response.token);
+          verifyUserSession();
+        }
+      })();
+    </script>
+  </body>
+</html>
