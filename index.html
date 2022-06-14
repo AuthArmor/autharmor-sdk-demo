@@ -15,9 +15,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="config-btn">
-        Settings
-      </div>
+      <div class="config-btn">Settings</div>
       <aside class="sidenav">
         <div class="sidenav-head">
           <p class="sidenav-title">Settings</p>
@@ -26,9 +24,7 @@
           </div>
         </div>
         <div class="sidenav-section">
-          <p class="sidenav-section-title">
-            Allowed Methods
-          </p>
+          <p class="sidenav-section-title">Allowed Methods</p>
           <div class="sidenav-section-content">
             <div class="allowed-methods">
               <div class="allowed-method active" data-method="magiclink">
@@ -129,12 +125,15 @@
               return false;
             }
 
-            const me = await fetch("http://localhost:8000/me", {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`
+            const me = await fetch(
+              "https://autharmor-demo-static.herokuapp.com/me",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
               }
-            }).then(res => res.json());
+            ).then(res => res.json());
 
             console.log(me);
 
@@ -182,7 +181,7 @@
         AuthArmor.on("authenticated", async data => {
           console.log("authenticated", data);
           const response = await fetch(
-            `http://localhost:8000/auth/${data.auth_method}/validate`,
+            `https://autharmor-demo-static.herokuapp.com/auth/${data.auth_method}/validate`,
             {
               method: "POST",
               headers: {
