@@ -15,7 +15,7 @@
   </head>
   <body>
     <div class="container"></div>
-    <script src="../build/index.umd.js"></script>
+    <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script>
     <script>
       (async () => {
         const verifyUserSession = async () => {
@@ -27,12 +27,15 @@
               return false;
             }
 
-            const me = await fetch("http://localhost:8000/me", {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`
+            const me = await fetch(
+              "https://aa2point0demo.azurewebsites.net/me",
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
               }
-            }).then(res => res.json());
+            ).then(res => res.json());
 
             console.log(me);
 
@@ -48,7 +51,7 @@
 
         if (token) {
           const response = await fetch(
-            `http://localhost:8000/auth/${data.auth_method}/validate`,
+            `https://aa2point0demo.azurewebsites.net/auth/${data.auth_method}/validate`,
             {
               method: "POST",
               headers: {
