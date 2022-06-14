@@ -126,7 +126,7 @@
             }
 
             const me = await fetch(
-              "https://autharmor-demo-static.herokuapp.com/me",
+              "https://autharmor-sample-node.herokuapp.com/me",
               {
                 method: "GET",
                 headers: {
@@ -181,7 +181,7 @@
         AuthArmor.on("authenticated", async data => {
           console.log("authenticated", data);
           const response = await fetch(
-            `https://autharmor-demo-static.herokuapp.com/auth/${data.auth_method}/validate`,
+            `https://autharmor-sample-node.herokuapp.com/auth/${data.auth_method}/validate`,
             {
               method: "POST",
               headers: {
