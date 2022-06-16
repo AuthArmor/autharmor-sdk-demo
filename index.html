@@ -118,12 +118,17 @@
     <!-- <script src="./build/index.umd.js"></script> -->
     <script>
       (async () => {
+        const apiUrl =
+          location.host === "localhost:3000"
+            ? "http://localhost:8000"
+            : "https://aa2point0demo.azurewebsites.net";
+
         let selectedMethods = ["authenticator", "webauthn", "magiclink"];
         const AuthArmor = new window.AuthArmorSDK({
-          endpointBasePath: "http://localhost:8000/auth/autharmor", // (Optional) Your backend URL goes here
+          endpointBasePath: `${apiUrl}/auth/autharmor`, // (Optional) Your backend URL goes here
           publicKey:
             "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjhiNzhkYTFmLWU4NWEtNDg4Ny05MmQxLTcyNWZlNTg3MGFiZCJ9.eyJrZXkiOiJXbXhCN1g2TVhGM3BtZEJWUnNIYkVuaHZZN3M1NVVzQkdkTlBiRTdmdkU3VmlSU0wiLCJpYXQiOjE2NTUxNDg5NTh9.d2enMoOLTUeC-9NegdJHn0Xh5AGx8uQ1R68tVAGs0pMTDGf58BCBleeC2w16bmF0hAqui94EcmCX8KSoKhzmiA",
-          // webauthnClientId: "1bd515ee-c7d5-4e19-ba6e-348f9a785f19",
+          webauthnClientId: "1bd515ee-c7d5-4e19-ba6e-348f9a785f19",
           registerRedirectUrl: "http://localhost:3000/magic-register",
           authenticationRedirectUrl:
             "http://localhost:3000/tests/magiclinkredirect"
@@ -172,7 +177,7 @@
               return false;
             }
 
-            const me = await fetch("http://localhost:8000/me", {
+            const me = await fetch(`${apiUrl}/me`, {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${token}`
@@ -188,9 +193,8 @@
         };
 
         const validateAuth = async data => {
-          console.log("authenticated", data);
           const response = await fetch(
-            `http://localhost:8000/auth/${data.auth_method}/validate`,
+            `${apiUrl}/auth/${data.auth_method}/validate`,
             {
               method: "POST",
               headers: {
@@ -201,6 +205,12 @@
               })
             }
           ).then(res => res.json());
+
+          console.log(
+            `Authentication Validated (${data.auth_method}):`,
+            response
+          );
+
           localStorage.setItem("token", response.token);
           verifyUserSession();
         };

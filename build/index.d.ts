@@ -25,14 +25,14 @@ interface AuthenticateResponseSuccess {
     nickname: string;
     token: string;
     authorized: true;
-    status: "Success" | "Timeout" | "Declined";
+    status: "Success" | "timeout" | "Declined";
     metadata?: any;
 }
 interface AuthenticateResponseFail {
     response: any;
     nickname: string;
     authorized: false;
-    status: "Success" | "Timeout" | "Declined";
+    status: "Success" | "timeout" | "Declined";
     metadata?: any;
 }
 interface LocationData {
