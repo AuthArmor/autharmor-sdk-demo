@@ -67,7 +67,7 @@
           const body = await response.json();
 
           if (response.status >= 400) {
-            alert("Verification error: " + body.error.message);
+            alert("Verification error: " + body.error.errorMessage);
             location.href = "/";
             return;
           }
