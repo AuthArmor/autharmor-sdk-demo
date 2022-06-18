@@ -35,14 +35,15 @@
                   Authorization: `Bearer ${token}`
                 }
               }
-            ).then(res => res.json());
+            );
 
-            console.log(me);
+            if (me.status >= 400) {
+              throw new Error("Unauthorized");
+            }
 
             location.href = "/";
           } catch (err) {
             console.error(err);
-            alert("An unknown error has occurred: " + err.message);
           }
         };
 
@@ -61,7 +62,16 @@
                 token
               })
             }
-          ).then(res => res.json());
+          );
+
+          const body = await response.json();
+
+          if (response.status >= 400) {
+            alert("Verification error: " + body.error.message);
+            location.href = "/";
+            return;
+          }
+
           localStorage.setItem("token", response.token);
           verifyUserSession();
         }
