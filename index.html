@@ -114,8 +114,8 @@
         <div class="logout-btn">Logout</div>
       </div>
     </div>
-    <!-- <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script> -->
-    <script src="./build/index.umd.js"></script>
+    <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script>
+    <!-- <script src="./build/index.umd.js"></script> -->
     <script>
       (async () => {
         const apiUrl =
@@ -123,7 +123,15 @@
             ? "http://localhost:8000"
             : "https://aa2point0demo.azurewebsites.net";
 
-        let selectedMethods = ["authenticator", "webauthn", "magiclink"];
+        const host = "autharmor-demo-static.herokuapp.com";
+        if (
+          host == window.location.host &&
+          window.location.protocol !== "https:"
+        ) {
+          window.location.protocol = "https";
+        }
+
+        let selectedMethods = ["magiclink"];
         const AuthArmor = new window.AuthArmorSDK({
           endpointBasePath: `${apiUrl}/auth/autharmor`, // (Optional) Your backend URL goes here
           publicKey:
