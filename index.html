@@ -123,6 +123,14 @@
             ? "http://localhost:8000"
             : "https://aa2point0demo.azurewebsites.net";
 
+        const host = "autharmor-demo-static.herokuapp.com";
+        if (
+          host == window.location.host &&
+          window.location.protocol !== "https:"
+        ) {
+          window.location.protocol = "https";
+        }
+
         let selectedMethods = ["magiclink"];
         const AuthArmor = new window.AuthArmorSDK({
           endpointBasePath: `${apiUrl}/auth/autharmor`, // (Optional) Your backend URL goes here
