@@ -48,7 +48,10 @@
         };
 
         const url = new URL(location.href);
-        const token = url.searchParams.get("aatoken");
+        const token =
+          url.searchParams.get("auth_validation_token") ||
+          url.searchParams.get("registration_validation_token");
+        const requestId = url.searchParams.get("auth_request_id");
 
         if (token) {
           const response = await fetch(
@@ -59,7 +62,8 @@
                 "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                token
+                auth_validation_token: token,
+                requestId
               })
             }
           );
