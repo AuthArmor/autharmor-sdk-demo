@@ -51,7 +51,7 @@
         const token =
           url.searchParams.get("auth_validation_token") ||
           url.searchParams.get("registration_validation_token");
-        const requestId = url.searchParams.get("auth_request_id");
+        const requestId = url.searchParams.get("auth_request_id") || undefined;
 
         if (token) {
           const response = await fetch(
