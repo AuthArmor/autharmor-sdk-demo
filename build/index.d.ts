@@ -73,9 +73,6 @@ declare global {
         AuthArmorSDK: any;
         AuthArmor: any;
     }
-    interface Crypto {
-        randomUUID: () => string;
-    }
 }
 declare class SDK {
     private url;
@@ -94,9 +91,9 @@ declare class SDK {
     private registerRedirectUrl?;
     private authenticationRedirectUrl?;
     private debug;
-    constructor({ endpointBasePath, publicKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
+    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
         endpointBasePath?: string | undefined;
-        publicKey?: string | undefined;
+        clientSdkApiKey?: string | undefined;
         webauthnClientId?: string | undefined;
         registerRedirectUrl?: string | undefined;
         authenticationRedirectUrl?: string | undefined;
@@ -114,6 +111,7 @@ declare class SDK {
     private showPopupQRCode;
     private hidePopupQRCode;
     private init;
+    private updateModalText;
     private selectTab;
     private closeModal;
     private padTime;
