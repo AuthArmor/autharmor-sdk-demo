@@ -63,9 +63,29 @@ interface FormStyles {
     activeTabColor: string;
     qrCodeBackground: string;
 }
+interface Preferences {
+    action_name: string;
+    username: string;
+    short_msg: string;
+    timeout_in_seconds: number;
+    origin_location_data: LocationData;
+}
+interface AuthenticatorPreferences extends Preferences {
+    send_push: boolean;
+}
+interface FormAuthTypePreferences {
+    authenticator?: Partial<AuthenticatorPreferences>;
+    magicLink?: Partial<Preferences>;
+    webauthn?: Partial<Preferences>;
+}
+interface FormPreferences {
+    register: FormAuthTypePreferences;
+    login: FormAuthTypePreferences;
+}
 interface FormMountOptions {
     methods?: AuthMethods[];
     usernameless?: boolean;
+    preferences?: Partial<FormPreferences>;
     styles?: Partial<FormStyles>;
 }
 declare global {
@@ -90,6 +110,7 @@ declare class SDK {
     private hasCalledValidate;
     private registerRedirectUrl?;
     private authenticationRedirectUrl?;
+    private preferences?;
     private debug;
     constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
         endpointBasePath?: string | undefined;

@@ -117,21 +117,67 @@
     <!-- <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script> -->
     <script src="./build/index.umd.js"></script>
     <script>
-      (async () => {
-        const apiUrl =
-          location.host === "localhost:3000"
-            ? "http://localhost:8000"
-            : "https://aa2point0demo.azurewebsites.net";
+      // Demo site config
+      const apiUrl =
+        location.host === "localhost:3000"
+          ? "http://localhost:8000"
+          : "https://aa2point0demo.azurewebsites.net";
 
-        const host = "autharmor-demo-static.herokuapp.com";
-        if (
-          host == window.location.host &&
-          window.location.protocol !== "https:"
-        ) {
-          window.location.protocol = "https";
-        }
+      const host = "autharmor-demo-static.herokuapp.com";
+      if (
+        host == window.location.host &&
+        window.location.protocol !== "https:"
+      ) {
+        window.location.protocol = "https";
+      }
 
+      //
+      const main = async () => {
         let selectedMethods = ["magiclink"];
+        const formConfig = {
+          preferences: {
+            login: {
+              authenticator: {
+                action_name: "Authenticator Login",
+                short_msg:
+                  "Demo site login pending, please respond using the authenticator app",
+                timeout_in_seconds: 90
+              },
+              magicLink: {
+                action_name: "Magic Link Login",
+                short_msg:
+                  "Demo site login pending, please respond by pressing the button below",
+                timeout_in_seconds: 300
+              },
+              webauthn: {
+                action_name: "WebAuthn Login",
+                short_msg:
+                  "Demo site login pending, please respond by using the appropriate method",
+                timeout_in_seconds: 120
+              }
+            },
+            register: {
+              authenticator: {
+                action_name: "Authenticator Register",
+                short_msg:
+                  "Demo site registration pending, please respond using the authenticator app",
+                timeout_in_seconds: 90
+              },
+              magicLink: {
+                action_name: "Magic Link Register",
+                short_msg:
+                  "Demo site registration pending, please respond by pressing the button below",
+                timeout_in_seconds: 300
+              },
+              webauthn: {
+                action_name: "WebAuthn Register",
+                short_msg:
+                  "Demo site registration pending, please respond by using the appropriate method",
+                timeout_in_seconds: 120
+              }
+            }
+          }
+        };
         const AuthArmor = new window.AuthArmorSDK({
           endpointBasePath: `${apiUrl}/auth/autharmor`, // (Optional) Your backend URL goes here
           clientSdkApiKey:
@@ -143,7 +189,7 @@
 
         const showLoggedInScreen = user => {
           document.querySelector(".logged-in-username").textContent =
-            user.nickname;
+            user.username;
           document
             .querySelector(".logged-in-screen .logout-btn")
             .addEventListener("click", () => {
@@ -200,6 +246,10 @@
         };
 
         const validateAuth = async data => {
+          if (data.auth_method === "MagicLink") {
+            return;
+          }
+
           const response = await fetch(
             `${apiUrl}/auth/${data.auth_method}/validate`,
             {
@@ -223,7 +273,8 @@
         };
 
         AuthArmor.form.mount(".form", {
-          usernameless: true // Toggle usernameless auth
+          usernameless: true, // Toggle usernameless auth
+          ...formConfig
         });
 
         document.querySelector(".config-btn").addEventListener("click", () => {
@@ -244,7 +295,8 @@
               );
               method.classList.remove("active");
               AuthArmor.form.mount(".form", {
-                methods: selectedMethods
+                methods: selectedMethods,
+                ...formConfig
               });
               return;
             }
@@ -252,7 +304,8 @@
             selectedMethods = [...selectedMethods, method.dataset.method];
             method.classList.add("active");
             AuthArmor.form.mount(".form", {
-              methods: selectedMethods
+              methods: selectedMethods,
+              ...formConfig
             });
           });
         });
@@ -264,7 +317,9 @@
         });
 
         verifyUserSession();
-      })();
+      };
+
+      main();
     </script>
   </body>
 </html>
