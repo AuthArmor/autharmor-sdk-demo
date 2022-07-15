@@ -187,3 +187,18 @@ body {
     margin: 13px 0;
   }
 }
+
+p.registered-title {
+  margin: 0;
+  font-size: 30px;
+  max-width: none;
+}
+
+.registered-screen p.logged-in-text {
+  font-size: 18px;
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-weight: 600;
+  opacity: 0.7;
+}
