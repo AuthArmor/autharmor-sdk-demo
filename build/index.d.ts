@@ -74,6 +74,7 @@ interface AuthenticatorPreferences extends Preferences {
     send_push: boolean;
 }
 interface FormAuthTypePreferences {
+    default?: Partial<AuthenticatorPreferences>;
     authenticator?: Partial<AuthenticatorPreferences>;
     magicLink?: Partial<Preferences>;
     webauthn?: Partial<Preferences>;
@@ -129,6 +130,8 @@ declare class SDK {
     private hidePopup;
     private updateMessage;
     private executeEvent;
+    private hideLoading;
+    private showLoading;
     private showPopupQRCode;
     private hidePopupQRCode;
     private init;
@@ -150,7 +153,7 @@ declare class SDK {
     loginWebAuthn: (username: string) => Promise<void>;
     requestAuth: (type: AuthTypes, username?: string | undefined) => Promise<void>;
     private selectAuthMethod;
-    setCardText: (messages: Record<string, string>) => void;
+    setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
     mount: (selector?: string, options?: FormMountOptions) => void;
     setStyle: (styles: FormStyles) => void;
     on(eventName: Events, fn: EventListener): void;
@@ -162,6 +165,9 @@ declare class SDK {
     private logout;
     private onAuthResponse;
     private pollAuthRequest;
+    getUserEnrollments: ({ username }: {
+        username: string;
+    }) => Promise<any>;
     private authenticate;
     private getUser;
     get invite(): {
