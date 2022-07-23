@@ -83,7 +83,13 @@
         </p>
         <div class="buttons-container">
           <div class="logout-btn">Logout</div>
-          <div class="primary-btn">Elevate Permissions</div>
+          <div
+            class="primary-btn elevate-btn"
+            data-action-name="Withdraw Balance"
+            data-short-msg="Withdraw $1000 from your account (Demo)"
+          >
+            Elevate Permissions
+          </div>
         </div>
       </div>
       <div class="registered-screen hidden">
@@ -95,7 +101,13 @@
         </p>
         <div class="buttons-container">
           <div class="logout-btn">Logout</div>
-          <div class="primary-btn">Elevate Permissions</div>
+          <div
+            class="primary-btn elevate-btn"
+            data-action-name="Withdraw Balance"
+            data-short-msg="Withdraw $1000 from your account (Demo)"
+          >
+            Elevate Permissions
+          </div>
         </div>
       </div>
     </div>
@@ -107,8 +119,10 @@
         location.host === "localhost:3000"
           ? "http://localhost:8000"
           : "https://aa2point0demo.azurewebsites.net";
+      let username = "";
 
       const host = "autharmor-demo-static.herokuapp.com";
+
       if (
         host == window.location.host &&
         window.location.protocol !== "https:"
@@ -184,6 +198,7 @@
         });
 
         const showLoggedInScreen = user => {
+          username = user.username || "";
           document.querySelector(".logged-in-username").textContent =
             user.username;
           document
@@ -203,6 +218,7 @@
         };
 
         const showRegisteredScreen = user => {
+          username = (user && user.username) || "";
           document.querySelector(".registered-username").textContent =
             (user && user.username) || "";
           document
@@ -318,6 +334,22 @@
         });
 
         verifyUserSession();
+
+        document.querySelectorAll(".elevate-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const { actionName, shortMsg } = btn.dataset;
+            console.log({
+              short_msg: shortMsg,
+              action_name: actionName,
+              username
+            });
+            AuthArmor.authenticate({
+              short_msg: shortMsg,
+              action_name: actionName,
+              username
+            });
+          });
+        });
       };
 
       main();

@@ -20,41 +20,9 @@ interface InviteData {
     inviteCode: string;
     signature: string;
 }
-interface AuthenticateResponseSuccess {
-    response: any;
-    nickname: string;
-    token: string;
-    authorized: true;
-    status: "Success" | "timeout" | "Declined";
-    metadata?: any;
-}
-interface AuthenticateResponseFail {
-    response: any;
-    nickname: string;
-    authorized: false;
-    status: "Success" | "timeout" | "Declined";
-    metadata?: any;
-}
 interface LocationData {
     latitude: string;
     longitude: string;
-}
-interface AuthenticateArgs {
-    nickname: string;
-    sendPush: boolean;
-    actionName: string;
-    shortMessage: string;
-    visualVerify: boolean;
-    showPopup: boolean;
-    headers?: Record<string, string>;
-    qrCodeStyle: {
-        borderRadius: number;
-        background: string;
-        foreground: string;
-    };
-    locationData: LocationData;
-    onSuccess: (data: AuthenticateResponseSuccess) => any;
-    onFailure: (data: AuthenticateResponseFail) => any;
 }
 interface FormStyles {
     accentColor: string;
@@ -112,6 +80,7 @@ declare class SDK {
     private registerRedirectUrl?;
     private authenticationRedirectUrl?;
     private preferences?;
+    private customOptions?;
     private debug;
     constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
         endpointBasePath?: string | undefined;
@@ -151,7 +120,7 @@ declare class SDK {
     registerMagicLink: (username: string) => Promise<void>;
     registerWebAuthn: (username: string) => Promise<void>;
     loginWebAuthn: (username: string) => Promise<void>;
-    requestAuth: (type: AuthTypes, username?: string | undefined) => Promise<void>;
+    requestAuth: (type: AuthTypes, options?: Partial<Preferences> | undefined) => Promise<void>;
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
     mount: (selector?: string, options?: FormMountOptions) => void;
@@ -185,23 +154,7 @@ declare class SDK {
         getInvitesByNickname: ({ nickname, headers }: InviteNicknameOptions) => Promise<any>;
     };
     get auth(): {
-        authenticate: ({ nickname, sendPush, visualVerify, showPopup, actionName, shortMessage, locationData, headers, onSuccess, onFailure }: AuthenticateArgs) => Promise<{
-            getTimeLeft: () => number;
-            getQRCode: ({ backgroundColor, fillColor, borderRadius }?: {
-                backgroundColor?: string | undefined;
-                fillColor?: string | undefined;
-                borderRadius?: number | undefined;
-            }) => any;
-            auth_request_id: string;
-            auth_profile_id: string;
-            visual_verify_value: string;
-            response_code: number;
-            response_message: string;
-            qr_code_data: string;
-            push_message_sent: boolean;
-            timeout_in_seconds: number;
-            timeout_utc_datetime: string;
-        }>;
+        authenticate: (options?: Partial<Preferences> | undefined) => Promise<void>;
         getUser: () => Promise<any>;
         logout: () => Promise<any>;
     };
