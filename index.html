@@ -273,7 +273,8 @@
                 "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                requestId: data.id
+                requestId: data.id,
+                token: data.token
               })
             }
           ).then(res => res.json());

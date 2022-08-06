@@ -80,14 +80,16 @@ declare class SDK {
     private registerRedirectUrl?;
     private authenticationRedirectUrl?;
     private preferences?;
+    private recaptcha?;
     private customOptions?;
     private debug;
-    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
+    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, recaptchaSiteKey, debug }: {
         endpointBasePath?: string | undefined;
         clientSdkApiKey?: string | undefined;
         webauthnClientId?: string | undefined;
         registerRedirectUrl?: string | undefined;
         authenticationRedirectUrl?: string | undefined;
+        recaptchaSiteKey?: string | undefined;
         debug?: {
             url: string;
         } | undefined;
