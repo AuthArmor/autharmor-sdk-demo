@@ -81,15 +81,15 @@ declare class SDK {
     private authenticationRedirectUrl?;
     private preferences?;
     private recaptcha?;
+    private recaptchaSiteKey;
     private customOptions?;
     private debug;
-    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, recaptchaSiteKey, debug }: {
+    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
         endpointBasePath?: string | undefined;
         clientSdkApiKey?: string | undefined;
         webauthnClientId?: string | undefined;
         registerRedirectUrl?: string | undefined;
         authenticationRedirectUrl?: string | undefined;
-        recaptchaSiteKey?: string | undefined;
         debug?: {
             url: string;
         } | undefined;
@@ -105,6 +105,7 @@ declare class SDK {
     private showLoading;
     private showPopupQRCode;
     private hidePopupQRCode;
+    private getSDKConfig;
     private init;
     private updateModalText;
     private selectTab;
@@ -122,6 +123,7 @@ declare class SDK {
     registerMagicLink: (username: string) => Promise<void>;
     registerWebAuthn: (username: string) => Promise<void>;
     loginWebAuthn: (username: string) => Promise<void>;
+    private getRecaptchaToken;
     requestAuth: (type: AuthTypes, options?: Partial<Preferences> | undefined) => Promise<void>;
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
