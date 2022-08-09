@@ -127,7 +127,7 @@ declare class SDK {
     requestAuth: (type: AuthTypes, options?: Partial<Preferences> | undefined) => Promise<void>;
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
-    mount: (selector?: string, options?: FormMountOptions) => void;
+    mount: (selector?: string, options?: FormMountOptions) => Promise<void>;
     setStyle: (styles: FormStyles) => void;
     on(eventName: Events, fn: EventListener): void;
     off(eventName: Events): void;
@@ -168,7 +168,7 @@ declare class SDK {
         updateMessage: (message: string, status?: string) => void;
     };
     get form(): {
-        mount: (selector?: string, options?: FormMountOptions) => void;
+        mount: (selector?: string, options?: FormMountOptions) => Promise<void>;
         stylize: (styles: FormStyles) => void;
     };
 }
