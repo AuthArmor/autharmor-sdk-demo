@@ -1,4 +1,4 @@
-declare type Events = "authenticating" | "authenticated" | "inviteWindowOpened" | "inviteWindowClosed" | "popupOverlayOpened" | "popupOverlayClosed" | "inviteAccepted" | "inviteDeclined" | "inviteExists" | "inviteCancelled" | "registerSuccess" | "error";
+declare type Events = "authenticating" | "authSuccess" | "inviteWindowOpened" | "inviteWindowClosed" | "popupOverlayOpened" | "popupOverlayClosed" | "inviteAccepted" | "inviteDeclined" | "inviteExists" | "inviteCancelled" | "registerSuccess" | "error";
 declare type AuthTypes = "magiclink" | "push" | "usernameless" | "webauthn";
 declare type AuthMethods = "authenticator" | "magiclink" | "webauthn";
 declare type EventListener = (...data: any) => void | Promise<void>;

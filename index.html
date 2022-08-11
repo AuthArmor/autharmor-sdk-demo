@@ -322,7 +322,7 @@
           });
         });
 
-        AuthArmor.on("authenticated", validateAuth);
+        AuthArmor.on("authSuccess", validateAuth);
         AuthArmor.on("registerSuccess", data => {
           console.log("Registered successfully!");
           showRegisteredScreen({
