@@ -56,6 +56,7 @@ interface FormMountOptions {
     usernameless?: boolean;
     preferences?: Partial<FormPreferences>;
     styles?: Partial<FormStyles>;
+    visualVerify?: boolean;
 }
 declare global {
     interface Window {
@@ -128,6 +129,7 @@ declare class SDK {
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
     mount: (selector?: string, options?: FormMountOptions) => Promise<void>;
+    processLink: (link: string, customScheme: boolean) => string;
     setStyle: (styles: FormStyles) => void;
     on(eventName: Events, fn: EventListener): void;
     off(eventName: Events): void;
