@@ -125,6 +125,7 @@ declare class SDK {
     registerWebAuthn: (username: string) => Promise<void>;
     loginWebAuthn: (username: string) => Promise<void>;
     private getRecaptchaToken;
+    onLinkClick: (e: MouseEvent) => void;
     requestAuth: (type: AuthTypes, options?: Partial<Preferences> | undefined) => Promise<void>;
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
