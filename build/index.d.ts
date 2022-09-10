@@ -1,41 +1,29 @@
-declare type Events = "authenticating" | "authSuccess" | "inviteWindowOpened" | "inviteWindowClosed" | "popupOverlayOpened" | "popupOverlayClosed" | "inviteAccepted" | "inviteDeclined" | "inviteExists" | "inviteCancelled" | "registerSuccess" | "error";
-declare type AuthTypes = "magiclink" | "push" | "usernameless" | "webauthn";
-declare type AuthMethods = "authenticator" | "magiclink" | "webauthn";
+declare type Events = "authenticating" | "authSuccess" | "authTimeout" | "authDeclined" | "inviteWindowOpened" | "inviteWindowClosed" | "popupOverlayOpened" | "popupOverlayClosed" | "inviteAccepted" | "inviteDeclined" | "inviteExists" | "inviteCancelled" | "registerSuccess" | "error";
+declare type AuthTypes = "magiclink-email" | "push" | "usernameless" | "webauthn";
+export declare type AuthMethods = "authenticator" | "magiclink-email" | "webauthn";
 declare type EventListener = (...data: any) => void | Promise<void>;
-interface InviteNicknameOptions {
-    nickname: string;
-    headers?: Record<string, string>;
-}
-interface InviteIdOptions {
-    id: string;
-    headers?: Record<string, string>;
-}
-interface InviteOptions {
-    nickname: string;
-    referenceId?: string;
-    reset?: boolean;
-    headers?: Record<string, string>;
-}
-interface InviteData {
-    inviteCode: string;
-    signature: string;
-}
 interface LocationData {
     latitude: string;
     longitude: string;
 }
-interface FormStyles {
+export interface FormStyles {
     accentColor: string;
     backgroundColor: string;
     tabColor: string;
-    activeTabColor: string;
     qrCodeBackground: string;
+    highlightColor: string;
+    inputBackground: string;
+    appBtn: string;
 }
 interface Preferences {
     action_name: string;
     username: string;
+    custom_message: string;
     short_msg: string;
     timeout_in_seconds: number;
+    context_data: {
+        [x: string]: string;
+    };
     origin_location_data: LocationData;
 }
 interface AuthenticatorPreferences extends Preferences {
@@ -47,9 +35,9 @@ interface FormAuthTypePreferences {
     magicLink?: Partial<Preferences>;
     webauthn?: Partial<Preferences>;
 }
-interface FormPreferences {
+export interface FormPreferences {
     register: FormAuthTypePreferences;
-    login: FormAuthTypePreferences;
+    auth: FormAuthTypePreferences;
 }
 interface FormMountOptions {
     methods?: AuthMethods[];
@@ -58,14 +46,24 @@ interface FormMountOptions {
     styles?: Partial<FormStyles>;
     visualVerify?: boolean;
 }
+interface DebugSettings {
+    url: string;
+}
+interface SDKConfig {
+    clientSdkApiKey: string;
+    webauthnClientId: string;
+    registerRedirectUrl: string;
+    authenticationRedirectUrl: string;
+    getNonce?: () => string;
+    debug?: DebugSettings;
+}
 declare global {
     interface Window {
-        AuthArmorSDK: any;
+        AuthArmorSDK?: typeof SDK;
         AuthArmor: any;
     }
 }
 declare class SDK {
-    private url;
     private publicKey?;
     private webauthnClientId?;
     private webauthn?;
@@ -73,7 +71,6 @@ declare class SDK {
     private eventListeners;
     private tickTimerId?;
     private requestCompleted;
-    private pollInterval;
     private expirationDate;
     private pollTimerId?;
     private QRAnimationTimer?;
@@ -84,20 +81,16 @@ declare class SDK {
     private recaptcha?;
     private recaptchaSiteKey;
     private customOptions?;
+    private getNonce?;
+    private visualVerify?;
+    private tempRequests;
     private debug;
-    constructor({ endpointBasePath, clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, debug }: {
-        endpointBasePath?: string | undefined;
-        clientSdkApiKey?: string | undefined;
-        webauthnClientId?: string | undefined;
-        registerRedirectUrl?: string | undefined;
-        authenticationRedirectUrl?: string | undefined;
-        debug?: {
-            url: string;
-        } | undefined;
-    });
+    constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, debug }: SDKConfig);
     private processUrl;
     private ensureEventExists;
     private popupWindow;
+    private closePopupListener;
+    private showQRCodeListener;
     private showPopup;
     private hidePopup;
     private updateMessage;
@@ -119,6 +112,7 @@ declare class SDK {
     private getRequestSignature;
     private fetch;
     private getEnrollmentStatus;
+    private clearRequests;
     private getRequestStatus;
     registerAuthenticator: (username: string) => Promise<void>;
     registerMagicLink: (username: string) => Promise<void>;
@@ -130,45 +124,23 @@ declare class SDK {
     private selectAuthMethod;
     setCardText: (messages: Record<string, string>, enrolledMethods?: Record<string, any> | undefined) => void;
     mount: (selector?: string, options?: FormMountOptions) => Promise<void>;
+    getPopupMessage: (method: any) => string | undefined;
     processLink: (link: string, customScheme: boolean) => string;
     setStyle: (styles: FormStyles) => void;
     on(eventName: Events, fn: EventListener): void;
     off(eventName: Events): void;
-    private setInviteData;
-    private generateInviteCode;
-    private getInviteById;
-    private getInvitesByNickname;
-    private logout;
-    private onAuthResponse;
-    private pollAuthRequest;
     getUserEnrollments: ({ username }: {
         username: string;
     }) => Promise<any>;
     private authenticate;
-    private getUser;
-    get invite(): {
-        generateInviteCode: ({ nickname, headers, referenceId, reset }: InviteOptions) => Promise<any>;
-        setInviteData: ({ inviteCode, signature }: InviteData) => {
-            getQRCode: ({ backgroundColor, fillColor, borderRadius }?: {
-                backgroundColor?: string | undefined;
-                fillColor?: string | undefined;
-                borderRadius?: number | undefined;
-            }) => any;
-            getInviteLink: () => string;
-            openInviteLink: () => void;
-        };
-        getInviteById: ({ id, headers }: InviteIdOptions) => Promise<any>;
-        getInvitesByNickname: ({ nickname, headers }: InviteNicknameOptions) => Promise<any>;
-    };
+    destroy: () => void;
     get auth(): {
         authenticate: (options?: Partial<Preferences> | undefined) => Promise<void>;
-        getUser: () => Promise<any>;
-        logout: () => Promise<any>;
     };
     get popup(): {
         show: (message?: string, hideQRBtn?: boolean | undefined) => void;
         hide: (delay?: number) => void;
-        updateMessage: (message: string, status?: string) => void;
+        updateMessage: (message: string, status?: "danger" | "warn" | "success") => void;
     };
     get form(): {
         mount: (selector?: string, options?: FormMountOptions) => Promise<void>;

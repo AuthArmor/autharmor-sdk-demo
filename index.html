@@ -27,7 +27,7 @@
           <p class="sidenav-section-title">Allowed Methods</p>
           <div class="sidenav-section-content">
             <div class="allowed-methods">
-              <div class="allowed-method active" data-method="magiclink">
+              <div class="allowed-method active" data-method="magiclink-email">
                 <div class="method-icon">
                   <img src="./assets/email.svg" alt="Magic Link" />
                 </div>
@@ -131,10 +131,10 @@
       }
 
       const main = async () => {
-        let selectedMethods = ["magiclink"];
+        let selectedMethods = ["magiclink-email"];
         const formConfig = {
           preferences: {
-            login: {
+            auth: {
               default: {
                 action_name: "Login",
                 short_msg: "Demo site login pending"
@@ -190,7 +190,12 @@
             "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjhiNzhkYTFmLWU4NWEtNDg4Ny05MmQxLTcyNWZlNTg3MGFiZCJ9.eyJrZXkiOiJXbXhCN1g2TVhGM3BtZEJWUnNIYkVuaHZZN3M1NVVzQkdkTlBiRTdmdkU3VmlSU0wiLCJpYXQiOjE2NTUxNDg5NTh9.d2enMoOLTUeC-9NegdJHn0Xh5AGx8uQ1R68tVAGs0pMTDGf58BCBleeC2w16bmF0hAqui94EcmCX8KSoKhzmiA",
           webauthnClientId: "1bd515ee-c7d5-4e19-ba6e-348f9a785f19",
           registerRedirectUrl: `${location.origin}/magic-register`,
-          authenticationRedirectUrl: `${location.origin}/magic-login`
+          authenticationRedirectUrl: `${location.origin}/magic-login`,
+          getNonce: () => {
+            console.log("Getting nonce...");
+
+            return `custom-nonce`;
+          }
         });
 
         const showLoggedInScreen = user => {
