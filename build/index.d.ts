@@ -1,3 +1,4 @@
+/// <reference types="node" />
 declare type Events = "authenticating" | "authSuccess" | "authTimeout" | "authDeclined" | "inviteWindowOpened" | "inviteWindowClosed" | "popupOverlayOpened" | "popupOverlayClosed" | "inviteAccepted" | "inviteDeclined" | "inviteExists" | "inviteCancelled" | "registerSuccess" | "error";
 declare type AuthTypes = "magiclink-email" | "push" | "usernameless" | "webauthn";
 export declare type AuthMethods = "authenticator" | "magiclink-email" | "webauthn";
@@ -44,6 +45,7 @@ interface FormMountOptions {
     usernameless?: boolean;
     preferences?: Partial<FormPreferences>;
     styles?: Partial<FormStyles>;
+    defaultTab?: "login" | "register";
     visualVerify?: boolean;
 }
 interface DebugSettings {
@@ -85,6 +87,10 @@ declare class SDK {
     private visualVerify?;
     private tempRequests;
     private debug;
+    textTimer?: NodeJS.Timer;
+    textFadeTimer?: NodeJS.Timer;
+    textIndex: number;
+    loadingText: string[];
     constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, debug }: SDKConfig);
     private processUrl;
     private ensureEventExists;
@@ -97,6 +103,7 @@ declare class SDK {
     private executeEvent;
     private hideLoading;
     private showLoading;
+    private swapLoadingText;
     private showPopupQRCode;
     private hidePopupQRCode;
     private getSDKConfig;
