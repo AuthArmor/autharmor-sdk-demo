@@ -1,4 +1,5 @@
 declare const _default: {
-  inviteURL: string;
+    inviteURL: string;
+    devMode: boolean;
 };
 export default _default;
