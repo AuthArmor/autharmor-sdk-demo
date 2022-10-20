@@ -16,7 +16,6 @@ export interface FormStyles {
     inputBackground: string;
     appBtn: string;
 }
-export declare type AttachmentTypes = "Any" | "CrossPlatform" | "Platform";
 interface Preferences {
     action_name: string;
     username: string;
@@ -27,7 +26,6 @@ interface Preferences {
         [x: string]: string;
     };
     origin_location_data: LocationData;
-    attachment_type: AttachmentTypes;
 }
 interface AuthenticatorPreferences extends Preferences {
     send_push: boolean;
