@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="config-btn">Settings</div>
+      <aside class="sidenav">
+        <div class="sidenav-head">
+          <p class="sidenav-title">Settings</p>
+          <div class="sidenav-close">
+            <img src="./assets/cancel.svg" alt="Close" />
+          </div>
+        </div>
+        <div class="sidenav-section">
+          <p class="sidenav-section-title">Allowed Methods</p>
+          <div class="sidenav-section-content">
+            <div class="allowed-methods">
+              <div class="allowed-method active" data-method="magiclink-email">
+                <div class="method-icon">
+                  <img src="./assets/email.svg" alt="Magic Link" />
+                </div>
+                Magic Link
+              </div>
+              <div class="allowed-method active" data-method="authenticator">
+                <div class="method-icon">
+                  <img src="./assets/phone.svg" alt="Authenticator" />
+                </div>
+                Authenticator
+              </div>
+              <div class="allowed-method active" data-method="webauthn">
+                <div class="method-icon">
+                  <img src="./assets/email.svg" alt="WebAuthn" />
+                </div>
+                WebAuthn
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <div class="form hidden"></div>
+      <div class="logged-in-screen hidden">
+        <svg
+          version="1.1"
+          id="Capa_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          width="100px"
+          height="100px"
+          viewBox="0 0 305.002 305.002"
+        >
+          <g>
+            <g>
+              <path
+                d="M152.502,0.001C68.412,0.001,0,68.412,0,152.501s68.412,152.5,152.502,152.5c84.089,0,152.5-68.411,152.5-152.5
+			S236.591,0.001,152.502,0.001z M152.502,280.001C82.197,280.001,25,222.806,25,152.501c0-70.304,57.197-127.5,127.502-127.5
+			c70.304,0,127.5,57.196,127.5,127.5C280.002,222.806,222.806,280.001,152.502,280.001z"
+                fill="currentColor"
+              />
+              <path
+                d="M218.473,93.97l-90.546,90.547l-41.398-41.398c-4.882-4.881-12.796-4.881-17.678,0c-4.881,4.882-4.881,12.796,0,17.678
+			l50.237,50.237c2.441,2.44,5.64,3.661,8.839,3.661c3.199,0,6.398-1.221,8.839-3.661l99.385-99.385
+			c4.881-4.882,4.881-12.796,0-17.678C231.269,89.089,223.354,89.089,218.473,93.97z"
+                fill="currentColor"
+              />
+            </g>
+          </g>
+        </svg>
+        <p class="logged-in-text">
+          You've successfully logged in as
+          <span class="logged-in-username"></span>
+        </p>
+        <div class="buttons-container">
+          <div class="logout-btn">Logout</div>
+          <div
+            class="primary-btn elevate-btn"
+            data-action-name="Withdraw Balance"
+            data-short-msg="Withdraw $1000 from your account (Demo)"
+          >
+            Elevate Permissions
+          </div>
+        </div>
+      </div>
+      <div class="registered-screen hidden">
+        <p class="registered-title">
+          Welcome <span class="registered-username"></span>!
+        </p>
+        <p class="logged-in-text">
+          You have successfully registered a new account!
+        </p>
+        <div class="buttons-container">
+          <div class="logout-btn">Logout</div>
+          <div
+            class="primary-btn elevate-btn"
+            data-action-name="Withdraw Balance"
+            data-short-msg="Withdraw $1000 from your account (Demo)"
+          >
+            Elevate Permissions
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script> -->
+    <script src="./build/index.umd.js"></script>
+    <script>
+      // Demo site config
+      const apiUrl =
+        location.host === "localhost:3000"
+          ? "http://localhost:8000"
+          : "https://aa2point0demo.azurewebsites.net";
+      let username = "";
+
+      const host = "autharmor-demo-static.herokuapp.com";
+
+      if (
+        host == window.location.host &&
+        window.location.protocol !== "https:"
+      ) {
+        window.location.protocol = "https";
+      }
+
+      const main = async () => {
+        let selectedMethods = ["magiclink-email"];
+        const formConfig = {
+          preferences: {
+            auth: {
+              default: {
+                action_name: "Login",
+                short_msg: "Demo site login pending"
+              },
+              authenticator: {
+                action_name: "Authenticator Login",
+                short_msg:
+                  "Demo site login pending, please respond using the authenticator app",
+                timeout_in_seconds: 90
+              },
+              magicLink: {
+                action_name: "Magic Link Login",
+                short_msg:
+                  "Demo site login pending, please respond by pressing the button below",
+                timeout_in_seconds: 300
+              },
+              webauthn: {
+                action_name: "WebAuthn Login",
+                short_msg:
+                  "Demo site login pending, please respond by using the appropriate method",
+                timeout_in_seconds: 120
+              }
+            },
+            register: {
+              default: {
+                action_name: "Register",
+                short_msg: "Demo site registration pending"
+              },
+              authenticator: {
+                action_name: "Authenticator Register",
+                short_msg:
+                  "Demo site registration pending, please respond using the authenticator app",
+                timeout_in_seconds: 90
+              },
+              magicLink: {
+                action_name: "Magic Link Register",
+                short_msg:
+                  "Demo site registration pending, please respond by pressing the button below",
+                timeout_in_seconds: 300
+              },
+              webauthn: {
+                action_name: "WebAuthn Register",
+                short_msg:
+                  "Demo site registration pending, please respond by using the appropriate method",
+                timeout_in_seconds: 120
+              }
+            }
+          }
+        };
+        const AuthArmor = new window.AuthArmorSDK({
+          endpointBasePath: `${apiUrl}/auth/autharmor`, // (Optional) Your backend URL goes here
+          clientSdkApiKey:
+            "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjhiNzhkYTFmLWU4NWEtNDg4Ny05MmQxLTcyNWZlNTg3MGFiZCJ9.eyJrZXkiOiJXbXhCN1g2TVhGM3BtZEJWUnNIYkVuaHZZN3M1NVVzQkdkTlBiRTdmdkU3VmlSU0wiLCJpYXQiOjE2NTUxNDg5NTh9.d2enMoOLTUeC-9NegdJHn0Xh5AGx8uQ1R68tVAGs0pMTDGf58BCBleeC2w16bmF0hAqui94EcmCX8KSoKhzmiA",
+          webauthnClientId: "1bd515ee-c7d5-4e19-ba6e-348f9a785f19",
+          registerRedirectUrl: `${location.origin}/magic-register`,
+          authenticationRedirectUrl: `${location.origin}/magic-login`,
+          getNonce: () => {
+            console.log("Getting nonce...");
+
+            return `custom-nonce`;
+          }
+        });
+
+        const showLoggedInScreen = user => {
+          username = user.username || "";
+          document.querySelector(".logged-in-username").textContent =
+            user.username;
+          document
+            .querySelector(".logged-in-screen .logout-btn")
+            .addEventListener("click", () => {
+              localStorage.removeItem("token");
+              document
+                .querySelector(".logged-in-screen")
+                .classList.add("hidden");
+              document.querySelector(".form").classList.remove("hidden");
+              location.reload();
+            });
+          document.querySelector(".form").classList.add("hidden");
+          document
+            .querySelector(".logged-in-screen")
+            .classList.remove("hidden");
+        };
+
+        const showRegisteredScreen = user => {
+          username = (user && user.username) || "";
+          document.querySelector(".registered-username").textContent =
+            (user && user.username) || "";
+          document
+            .querySelector(".registered-screen .logout-btn")
+            .addEventListener("click", () => {
+              localStorage.removeItem("token");
+              document
+                .querySelector(".registered-screen")
+                .classList.add("hidden");
+              document.querySelector(".form").classList.remove("hidden");
+            });
+          document.querySelector(".form").classList.add("hidden");
+          document
+            .querySelector(".registered-screen")
+            .classList.remove("hidden");
+        };
+
+        const verifyUserSession = async () => {
+          try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+              document.querySelector(".form").classList.remove("hidden");
+              return false;
+            }
+
+            const me = await fetch(`${apiUrl}/me`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }).then(res => res.json());
+
+            console.log(me);
+
+            showLoggedInScreen(me.user);
+          } catch (err) {
+            document.querySelector(".form").classList.remove("hidden");
+          }
+        };
+
+        const validateAuth = async data => {
+          if (data.auth_method === "MagicLink") {
+            return;
+          }
+
+          const response = await fetch(
+            `${apiUrl}/auth/${data.auth_method}/validate`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                requestId: data.id,
+                token: data.token
+              })
+            }
+          ).then(res => res.json());
+
+          console.log(
+            `Authentication Validated (${data.auth_method}):`,
+            response
+          );
+
+          localStorage.setItem("token", response.token);
+          verifyUserSession();
+        };
+
+        AuthArmor.form.mount(".form", {
+          usernameless: true, // Toggle usernameless auth
+          ...formConfig
+        });
+
+        document.querySelector(".config-btn").addEventListener("click", () => {
+          document.querySelector(".sidenav").classList.toggle("active");
+        });
+
+        document
+          .querySelector(".sidenav-close")
+          .addEventListener("click", () => {
+            document.querySelector(".sidenav").classList.toggle("active");
+          });
+
+        document.querySelectorAll(".allowed-method").forEach(method => {
+          method.addEventListener("click", () => {
+            if (selectedMethods.includes(method.dataset.method)) {
+              selectedMethods = selectedMethods.filter(
+                selectedMethod => selectedMethod !== method.dataset.method
+              );
+              method.classList.remove("active");
+              AuthArmor.form.mount(".form", {
+                methods: selectedMethods,
+                ...formConfig
+              });
+              return;
+            }
+
+            selectedMethods = [...selectedMethods, method.dataset.method];
+            method.classList.add("active");
+            AuthArmor.form.mount(".form", {
+              methods: selectedMethods,
+              ...formConfig
+            });
+          });
+        });
+
+        AuthArmor.on("authSuccess", validateAuth);
+        AuthArmor.on("registerSuccess", data => {
+          console.log("Registered successfully!");
+          showRegisteredScreen({
+            username: data.username
+          });
+        });
+
+        verifyUserSession();
+
+        document.querySelectorAll(".elevate-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const { actionName, shortMsg } = btn.dataset;
+            console.log({
+              short_msg: shortMsg,
+              action_name: actionName,
+              username
+            });
+            AuthArmor.authenticate({
+              short_msg: shortMsg,
+              action_name: actionName,
+              username
+            });
+          });
+        });
+      };
+
+      main();
+    </script>
+  </body>
+</html>

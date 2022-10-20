@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/index.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-container hidden">
+        <p class="error-title">An error has occurred</p>
+        <p class="error-desc">An unknown error has occurred</p>
+      </div>
+    </div>
+    <script src="https://cdn.autharmor.com/scripts/autharmor-jsclient-sdk/v3.0.0/autharmor-jsclient-sdk.js"></script>
+    <script>
+      (async () => {
+        const apiUrl =
+          location.host === "localhost:3000"
+            ? "http://localhost:8000"
+            : "https://aa2point0demo.azurewebsites.net";
+
+        const verifyUserSession = async () => {
+          try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+              document.querySelector(".form").classList.remove("hidden");
+              return false;
+            }
+
+            const me = await fetch(`${apiUrl}/me`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+
+            if (me.status >= 400) {
+              throw new Error("Unauthorized");
+            }
+
+            location.href = "/";
+          } catch (err) {
+            console.error(err);
+            document
+              .querySelector(".error-container")
+              .classList.remove("hidden");
+            document.querySelector(".error-desc").textContent =
+              "An unknown error has occurred: " + err.message;
+          }
+        };
+
+        const url = new URL(location.href);
+        const token =
+          url.searchParams.get("auth_validation_token") ||
+          url.searchParams.get("registration_validation_token");
+        const requestId = url.searchParams.get("auth_request_id") || undefined;
+
+        if (token) {
+          try {
+            const response = await fetch(
+              `${apiUrl}/register/MagicLink/validate`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  token,
+                  requestId
+                })
+              }
+            );
+
+            const body = await response.json();
+
+            if (response.status >= 400) {
+              throw body;
+            }
+
+            localStorage.setItem("token", body.token);
+            verifyUserSession();
+          } catch (body) {
+            console.error(body);
+            document
+              .querySelector(".error-container")
+              .classList.remove("hidden");
+            document.querySelector(".error-desc").textContent =
+              "An unknown error has occurred: " +
+              ((body &&
+                body.err &&
+                body.err.error &&
+                body.err.error.errorMessage) ||
+                "Please try again later!");
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
