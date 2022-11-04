@@ -53,12 +53,29 @@ interface FormMountOptions {
 interface DebugSettings {
     url: string;
 }
+interface InternationalizationConfig {
+    login: {
+        tabName: string;
+        scanTitle: string;
+        scanDesc: string;
+        usernameLabel: string;
+        usernameInput: string;
+        action: string;
+    };
+    register: {
+        tabName: string;
+        usernameLabel: string;
+        usernameInput: string;
+        action: string;
+    };
+}
 interface SDKConfig {
     clientSdkApiKey: string;
     webauthnClientId: string;
     registerRedirectUrl: string;
     authenticationRedirectUrl: string;
     getNonce?: () => string;
+    i18n?: Partial<InternationalizationConfig>;
     debug?: DebugSettings;
 }
 declare global {
@@ -84,6 +101,7 @@ declare class SDK {
     private preferences?;
     private recaptcha?;
     private recaptchaSiteKey;
+    private i18n?;
     private customOptions?;
     private getNonce?;
     private visualVerify?;
@@ -93,7 +111,7 @@ declare class SDK {
     textFadeTimer?: NodeJS.Timer;
     textIndex: number;
     loadingText: string[];
-    constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, debug }: SDKConfig);
+    constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, i18n, debug }: SDKConfig);
     private processUrl;
     private ensureEventExists;
     private popupWindow;
