@@ -42,19 +42,8 @@ export interface FormPreferences {
     register: FormAuthTypePreferences;
     auth: FormAuthTypePreferences;
 }
-interface FormMountOptions {
-    methods?: AuthMethods[];
-    usernameless?: boolean;
-    preferences?: Partial<FormPreferences>;
-    styles?: Partial<FormStyles>;
-    defaultTab?: "login" | "register";
-    visualVerify?: boolean;
-}
-interface DebugSettings {
-    url: string;
-}
 interface InternationalizationConfig {
-    login: {
+    auth: {
         tabName: string;
         scanTitle: string;
         scanDesc: string;
@@ -69,13 +58,24 @@ interface InternationalizationConfig {
         action: string;
     };
 }
+interface FormMountOptions {
+    methods?: AuthMethods[];
+    usernameless?: boolean;
+    i18n?: Partial<InternationalizationConfig>;
+    preferences?: Partial<FormPreferences>;
+    styles?: Partial<FormStyles>;
+    defaultTab?: "login" | "register";
+    visualVerify?: boolean;
+}
+interface DebugSettings {
+    url: string;
+}
 interface SDKConfig {
     clientSdkApiKey: string;
     webauthnClientId: string;
     registerRedirectUrl: string;
     authenticationRedirectUrl: string;
     getNonce?: () => string;
-    i18n?: Partial<InternationalizationConfig>;
     debug?: DebugSettings;
 }
 declare global {
@@ -111,7 +111,7 @@ declare class SDK {
     textFadeTimer?: NodeJS.Timer;
     textIndex: number;
     loadingText: string[];
-    constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, i18n, debug }: SDKConfig);
+    constructor({ clientSdkApiKey, webauthnClientId, registerRedirectUrl, authenticationRedirectUrl, getNonce, debug }: SDKConfig);
     private processUrl;
     private ensureEventExists;
     private popupWindow;
